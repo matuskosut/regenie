@@ -3,13 +3,13 @@ on: [push, pull_request]
 jobs:
   dockerfile:
     runs-on: ubuntu-latest
-    name: Build docker image
+    name: Build
     steps:
-    - name: Dependencies
+    - name: Apt packages
       run: sudo apt install -y --no-install-recommends g++ libgomp1 make python3 zlib1g-dev wget
     - name: Get Bgen
       run: wget 'http://code.enkre.net/bgen/tarball/release/v1.1.7.tar.gz' && tar xzf v1.1.7.tar.gz && rm v1.1.7.tar.gz
     - name: Build Bgen
       run: cd v1.1.7 && python3 waf configure && python3 waf && cd ..
-    - name: Compile
-      run: (pwd && ls Makefile || cd .. && ls -la) && make BGEN_PATH=./v1.1.7 HAS_BOOST_IOSTREAM=1 STATIC=1 all
+    - name: Build Regenie
+      run: (cd .. && pwd && ls Makefile || cd .. && ls -la) && make BGEN_PATH=./v1.1.7 HAS_BOOST_IOSTREAM=1 STATIC=1 all
