@@ -11,7 +11,7 @@ jobs:
       - name: Apt packages
         run: sudo apt install -y --no-install-recommends g++ libgomp1 make python3 zlib1g-dev wget
 
-      - name: Cache Primes
+      - name: Cache Bgen
         id: cache-bgen
         uses: actions/cache@v2
         with:
