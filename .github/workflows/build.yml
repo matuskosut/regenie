@@ -15,22 +15,29 @@ jobs:
         id: cache-bgen
         uses: actions/cache@v2
         with:
-          path: v1.1.7
-          key: ${{ runner.os }}-bgen
+          path: v1.1.7.tgz
+          key: ${{ runner.os }}-bgentgz
 
-      - name: Get Bgen
-        if: steps.cache-bgen.outputs.cache-hit != 'true'
+      - name: Wget Bgen
+        if: steps.cache-bgentgz.outputs.cache-hit != 'true'
         run: |
           wget "http://code.enkre.net/bgen/tarball/release/v1.1.7.tgz"
+
+      - name: Install Bgen
+        run: |
           tar xzf v1.1.7.tgz
-          rm v1.1.7.tgz
           pushd v1.1.7
           python3 waf configure
           python3 waf
           popd
+        env:
+          BOOST_IO: 1
 
       - name: Build
-        run: (pwd && ls Makefile || cd .. && ls -la) && make BGEN_PATH=./v1.1.7 HAS_BOOST_IOSTREAM=0 STATIC=1 all
+        run: make BGEN_PATH=./v1.1.7 HAS_BOOST_IOSTREAM=$BOOST_IO STATIC=$STATIC all
+        env:
+          BOOST_IO: 1
+          STATIC: 1
 
       - name: Test
         run: ./regenie --help
