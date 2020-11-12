@@ -26,7 +26,7 @@ jobs:
       - name: Download Bgen if not cached
         if: steps.cache-bgentgz.outputs.cache-hit != 'true'
         run: |
-          wget "http://code.enkre.net/bgen/tarball/release/${BGEN_VERSION}.tgz" -O bgen.tgz
+          wget -O bgen.tgz "http://code.enkre.net/bgen/tarball/release/${BGEN_VERSION}"
 
       - name: Install Bgen
         run: |
