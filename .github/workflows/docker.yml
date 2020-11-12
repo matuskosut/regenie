@@ -12,4 +12,4 @@ jobs:
     - name: Build Bgen
       run: pushd v1.1.7 && python3 waf configure && python3 waf && popd
     - name: Compile
-      run: make BGEN_PATH=./v1.1.7 HAS_BOOST_IOSTREAM=1 STATIC=1 all
+      run: ls -la && cd .. && ls -la && make BGEN_PATH=./v1.1.7 HAS_BOOST_IOSTREAM=1 STATIC=1 all
