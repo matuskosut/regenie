@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Build
     steps:
-      - name: Check out repository
+      - name: Checkout repository
         uses: actions/checkout@v2
 
       - name: Apt packages
@@ -30,13 +30,11 @@ jobs:
           python3 waf configure
           python3 waf
           popd
-        env:
-          BOOST_IO: 1
 
       - name: Build
         run: make BGEN_PATH=./v1.1.7 HAS_BOOST_IOSTREAM=$BOOST_IO STATIC=$STATIC all
         env:
-          BOOST_IO: 1
+          BOOST_IO: 0
           STATIC: 1
 
       - name: Test
