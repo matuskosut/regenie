@@ -8,7 +8,7 @@ jobs:
     - name: Dependencies
       run: sudo apt install -y --no-install-recommends g++ libgomp1 make python3 zlib1g-dev wget
     - name: Get Bgen
-      run: wget 'http://code.enkre.net/bgen/tarball/release/v1.1.7.tar.gz' && tar -xzf v1.1.7.tgz
+      run: wget 'http://code.enkre.net/bgen/tarball/release/v1.1.7.tar.gz' && tar xzf v1.1.7.tar.gz && rm v1.1.7.tar.gz
     - name: Build Bgen
       run: cd v1.1.7 && python3 waf configure && python3 waf
     - name: Compile
