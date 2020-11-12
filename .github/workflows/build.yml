@@ -11,6 +11,13 @@ jobs:
       - name: Apt packages
         run: sudo apt install -y --no-install-recommends g++ libgomp1 make python3 zlib1g-dev wget
 
+      - name: Cache Primes
+        id: cache-primes
+        uses: actions/cache@v2
+        with:
+          path: prime-numbers
+          key: ${{ runner.os }}-primes
+
       - name: Get Bgen
         run: |
           wget "http://code.enkre.net/bgen/tarball/release/v1.1.7.tgz"
@@ -21,6 +28,7 @@ jobs:
           python3 waf
           popd
           ls -la ./v1.1.7/build/3rd_party/boost_1_55_0
+          ls -la ./v1.1.7/build/3rd_party/boost_1_55_0/libs
 
       - name: Build
         run: (pwd && ls Makefile || cd .. && ls -la) && make BGEN_PATH=./v1.1.7 HAS_BOOST_IOSTREAM=1 STATIC=1 all
