@@ -1,7 +1,7 @@
 on: [push, pull_request]
 
 jobs:
-  dockerfile:
+  build:
     runs-on: ubuntu-latest
     name: Build
     steps:
@@ -12,10 +12,18 @@ jobs:
         run: sudo apt install -y --no-install-recommends g++ libgomp1 make python3 zlib1g-dev wget
 
       - name: Get Bgen
-        run: wget "http://code.enkre.net/bgen/tarball/release/v1.1.7.tgz" && tar xzf v1.1.7.tgz && rm v1.1.7.tgz
+        run: |
+          wget "http://code.enkre.net/bgen/tarball/release/v1.1.7.tgz"
+          tar xzf v1.1.7.tgz
+          rm v1.1.7.tgz
+          pushd v1.1.7
+          python3 waf configure
+          python3 waf
+          popd
+          ls -la ./v1.1.7/build/3rd_party/boost_1_55_0
 
-      - name: Build Bgen
-        run: pushd v1.1.7 && python3 waf configure && python3 waf && popd
-
-      - name: Build Regenie
+      - name: Build
         run: (pwd && ls Makefile || cd .. && ls -la) && make BGEN_PATH=./v1.1.7 HAS_BOOST_IOSTREAM=1 STATIC=1 all
+
+      - name: Test
+        run: ./regenie --help
