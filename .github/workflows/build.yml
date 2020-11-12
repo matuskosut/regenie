@@ -4,38 +4,40 @@ jobs:
   build:
     runs-on: ubuntu-latest
     name: Build
+    env:
+      BOOST_IO: 0
+      STATIC: 1
+      BGEN_VERSION: v1.1.7
+      LIB_INSTALL: g++ libgomp1 make python3 zlib1g-dev wget
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
       - name: Apt packages
-        run: sudo apt install -y --no-install-recommends g++ libgomp1 make python3 zlib1g-dev wget
+        run: sudo apt install -y --no-install-recommends ${LIB_INSTALL}
 
       - name: Cache Bgen
         id: cache-bgen
         uses: actions/cache@v2
         with:
-          path: v1.1.7.tgz
+          path: bgen.tgz
           key: ${{ runner.os }}-bgentgz
 
-      - name: Wget Bgen
+      - name: Download Bgen if not cached
         if: steps.cache-bgentgz.outputs.cache-hit != 'true'
         run: |
-          wget "http://code.enkre.net/bgen/tarball/release/v1.1.7.tgz"
+          wget "http://code.enkre.net/bgen/tarball/release/${BGEN_VERSION}.tgz" -O bgen.tgz
 
       - name: Install Bgen
         run: |
-          tar xzf v1.1.7.tgz
-          pushd v1.1.7
+          tar xzf bgen.tgz
+          pushd ${BGEN_VERSION}
           python3 waf configure
           python3 waf
           popd
 
       - name: Build
-        run: make BGEN_PATH=./v1.1.7 HAS_BOOST_IOSTREAM=$BOOST_IO STATIC=$STATIC all
-        env:
-          BOOST_IO: 0
-          STATIC: 1
+        run: make BGEN_PATH=./${BGEN_VERSION} HAS_BOOST_IOSTREAM=$BOOST_IO STATIC=$STATIC all
 
       - name: Test
         run: ./regenie --help
